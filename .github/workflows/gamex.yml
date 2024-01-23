@@ -18,8 +18,7 @@ jobs:
       with:
         repository: lemonchu/GameX  # Specify the GameX repository
         ref: network  # Specify the branch in GameX repository
-        token: ${{ secrets.GAMEX_ACCESS_TOKEN }}  # Use a PAT if necessary
-        path: GameX
+        submodules: true
 
     - name: Set up MSBuild path
       uses: microsoft/setup-msbuild@v1.1
