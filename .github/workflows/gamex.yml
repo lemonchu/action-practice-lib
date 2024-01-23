@@ -1,0 +1,52 @@
+name: Build GameX Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        build_type: [Release]
+
+    steps:
+    - name: Checkout GameX repository
+      uses: actions/checkout@v3
+      with:
+        repository: lemonchu/GameX  # Specify the GameX repository
+        ref: network  # Specify the branch in GameX repository
+        token: ${{ secrets.GAMEX_ACCESS_TOKEN }}  # Use a PAT if necessary
+        path: GameX
+
+    - name: Set up MSBuild path
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Install Qt5
+      uses: jurplel/install-qt-action@v3.3.0
+      with:
+        version: '5.15.2'
+        arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}
+
+    - name: Configure CMake
+      run: cmake -B GameX/build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S GameX
+
+    - name: Build
+      run: cmake --build GameX/build --config ${{ matrix.build_type }}     
+
+    - name: Collect dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        $Env:VCINSTALLDIR = 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
+        windeployqt --no-translations --no-angle --no-opengl-sw build\Release\GameBall.exe
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: gameball-windows-release
+        path: build\Release
