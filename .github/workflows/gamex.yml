@@ -30,10 +30,10 @@ jobs:
         arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}
 
     - name: Configure CMake
-      run: cmake -B GameX/build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S GameX
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S GameX
 
     - name: Build
-      run: cmake --build GameX/build --config ${{ matrix.build_type }}     
+      run: cmake --build build --config ${{ matrix.build_type }}     
 
     - name: Collect dependencies (Windows)
       if: matrix.os == 'windows-latest'
