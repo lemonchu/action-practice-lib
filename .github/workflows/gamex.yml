@@ -16,9 +16,15 @@ jobs:
     - name: Checkout GameX repository
       uses: actions/checkout@v3
       with:
-        repository: lemonchu/GameX  # Specify the GameX repository
-        ref: network  # Specify the branch in GameX repository
+        repository: lemonchu/GameX
+        ref: network
         submodules: true
+
+    # Add a step to install vcpkg if it's not part of your repository
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
 
     - name: Set up MSBuild path
       uses: microsoft/setup-msbuild@v1.1
@@ -31,6 +37,9 @@ jobs:
 
     - name: Configure CMake
       run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S .
+      # Make sure to specify the correct path to the vcpkg toolchain file
+      # For example:
+      # -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}     
