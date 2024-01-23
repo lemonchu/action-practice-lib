@@ -30,7 +30,7 @@ jobs:
         arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S GameX
+      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S .
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}     
