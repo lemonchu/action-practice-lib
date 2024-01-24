@@ -1,0 +1,45 @@
+name: Build And Maunal Pack in Windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest]
+        build_type: [Release]
+
+    steps:
+    - name: Checkout GameX repository
+      uses: actions/checkout@v3
+      with:
+        repository: lemonchu/GameX
+        ref: network
+        submodules: true
+
+    # Add a step to install vcpkg if it's not part of your repository
+    - name: Install vcpkg
+      run: |
+        git clone https://github.com/microsoft/vcpkg.git
+        .\vcpkg\bootstrap-vcpkg.bat
+
+    - name: Set up MSBuild path
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Install Qt5
+      uses: jurplel/install-qt-action@v3.3.0
+      with:
+        version: '5.15.2'
+        arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}   
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.0.0
+      with:
+        name: gameball-windows-release
+        path: build\Release
