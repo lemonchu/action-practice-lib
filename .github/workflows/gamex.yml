@@ -36,14 +36,15 @@ jobs:
         arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}
 
     - name: Configure CMake
-      run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S .
+      run: |
+        cd GameX
+        cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -S .
       # Make sure to specify the correct path to the vcpkg toolchain file
       # For example:
       # -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Build
-      run: |
-        cd GameX
+      run: 
         cmake --build build --config ${{ matrix.build_type }}     
 
     - name: Collect dependencies (Windows)
