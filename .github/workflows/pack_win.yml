@@ -32,6 +32,19 @@ jobs:
         version: '5.15.2'
         arch: ${{ matrix.os == 'windows-latest' && 'win64_msvc2019_64' || 'mac' }}   
 
+    - name: Prepare Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.2.0
+      with:
+        vulkan-query-version: 1.3.204.0
+        vulkan-components: Vulkan-Headers, Vulkan-Loader
+        vulkan-use-cache: true
+
+    - name: cmake build
+      run: |
+        mkdir build
+        cd build
+        cmake -DCMAKE_BUILD_TYPE=Release ../GameX
+
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
 
