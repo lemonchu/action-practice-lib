@@ -42,7 +42,9 @@ jobs:
       # -DVCPKG_TARGET_TRIPLET=x64-windows -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake
 
     - name: Build
-      run: cmake --build build --config ${{ matrix.build_type }}     
+      run: |
+        cd GameX
+        cmake --build build --config ${{ matrix.build_type }}     
 
     - name: Collect dependencies (Windows)
       if: matrix.os == 'windows-latest'
