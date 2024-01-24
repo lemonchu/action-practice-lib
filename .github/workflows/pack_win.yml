@@ -14,11 +14,8 @@ jobs:
 
     steps:
     - name: Checkout GameX repository
-      uses: actions/checkout@v3
-      with:
-        repository: lemonchu/GameX
-        ref: network
-        submodules: true
+      run: |
+        git clone -b network https://github.com/lemonchu/GameX.git --recursive
 
     # Add a step to install vcpkg if it's not part of your repository
     - name: Install vcpkg
